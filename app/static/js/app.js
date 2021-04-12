@@ -1,5 +1,51 @@
 /* Add your Application JavaScript */
 // Instantiate our main Vue Instance
+const UploadForm = {
+    name: 'UploadForm',
+    template: `
+    <h2>Upload Form</h2>
+    
+    <form id="uploadForm" @submit.prevent="uploadPhoto">
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class='form-control' name="description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="photo">Photo</label>
+            <input type="file" name="photo" class="form-control">
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    `,
+    data() {
+        return {}
+    },
+    methods:{
+        uploadPhoto(){
+            let uploadForm = document.getElementById('uploadForm');
+            let form_data = new FormData(uploadForm);
+            fetch("/api/upload", {
+                method: 'POST',
+                body: form_data,
+                headers: {
+                    'X-CSRFToken': token
+                     },
+                     credentials: 'same-origin'
+                })
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (jsonResponse) {
+                    // display a success/error message
+                    console.log(jsonResponse);
+                    })
+                    .catch(function (error) {
+                    console.error(error);
+                })
+        }
+    }
+};
 const app = Vue.createApp({
     data() {
         return {
@@ -73,7 +119,7 @@ const NotFound = {
 const routes = [
     { path: "/", component: Home },
     // Put other routes here
-
+    {path: "/upload", component: UploadForm},
     // This is a catch all route in case none of the above matches
     { path: '/:pathMatch(.*)*', name: 'not-found', component: NotFound }
 ];

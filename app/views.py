@@ -16,7 +16,7 @@ import os
 @app.route('/api/upload', methods=['POST'])
 def upload():
     form = UploadForm()
-    if request.methods == 'POST':
+    if request.method == 'POST':
         if form.validate_on_submit():
             description = form.description.data
             photo = form.photo.data
