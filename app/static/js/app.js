@@ -1,6 +1,14 @@
 /* Add your Application JavaScript */
+const app = Vue.createApp({
+    data() {
+        return {
+
+        }
+    }
+});
+
 // Instantiate our main Vue Instance
-const UploadForm = {
+app.component('upload-form',{
     name: 'UploadForm',
     template: `
     <h2>Upload Form</h2>
@@ -64,15 +72,8 @@ const UploadForm = {
                 })
         }
     }
-};
-const app = Vue.createApp({
-    data() {
-        return {
-
-        }
-    }
 });
-
+const UploadForm = app.component("upload-form");
 app.component('app-header', {
     name: 'AppHeader',
     template: `
