@@ -6,6 +6,12 @@ const UploadForm = {
     <h2>Upload Form</h2>
     
     <form id="uploadForm" @submit.prevent="uploadPhoto">
+    <div id = "message">
+        <p class="alert alert-success" v-if="value === 'green'" >{{successful}}</p>
+        <ul class="alert alert-danger" v-if="value === 'red'" >
+            <li v-for="errors in errors" > {{errors}}</li>
+        </ul> 
+    </div>
         <div class="form-group">
             <label for="description">Description</label>
             <textarea class='form-control' name="description"></textarea>
@@ -19,12 +25,18 @@ const UploadForm = {
     </form>
     `,
     data() {
-        return {}
+        return {
+            value: '',
+            errors: [],
+            successful:[]
+            
+        }
     },
     methods:{
         uploadPhoto(){
             let uploadForm = document.getElementById('uploadForm');
             let form_data = new FormData(uploadForm);
+            let self=this;
             fetch("/api/upload", {
                 method: 'POST',
                 body: form_data,
@@ -37,8 +49,15 @@ const UploadForm = {
                         return response.json();
                     })
                     .then(function (jsonResponse) {
-                    // display a success/error message
-                    console.log(jsonResponse);
+                      if (jsonResponse.hasOwnProperty('uploadData')){
+                        self.successful = jsonResponse.uploadData.message;
+                        self.value = 'green';
+                        console.log(jsonResponse)
+                    } else if (jsonResponse.hasOwnProperty('errors')){
+                        console.log(jsonResponse)
+                        self.errors = jsonResponse.errors.errors;
+                        self.value = 'red';
+                    }
                     })
                     .catch(function (error) {
                     console.error(error);
@@ -68,6 +87,9 @@ app.component('app-header', {
           <li class="nav-item active">
             <router-link class="nav-link" to="/">Home <span class="sr-only">(current)</span></router-link>
           </li>
+          <li class="nav-item active">
+          <router-link class="nav-link" to="/upload">Upload Form <span class="sr-only">(current)</span></router-link>
+        </li>
         </ul>
       </div>
     </nav>
